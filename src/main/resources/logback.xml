@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--
+    This path is relative to the service-wrapper bin directory
+    located at ${bb.root}/apps/service-wrapper/bin. The path below
+    maps to {bb.root}/logs/custom/.
+    -->
+    <file>../../../logs/custom/csuc-selfunenroll.log</file>
+    <append>true</append>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>../../../logs/custom/csuc-selfunenroll.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <!-- keep 10 days' worth of history -->
+      <maxHistory>10</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss} | %-5level | %-45(%L:%logger{40}) | %m%n%ex{10}</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.springframework">
+        <level value="all" />
+        <appender-ref ref="FILE" />
+  </logger>
+
+  
+  	<logger name="edu.csuchico.selfunenroll">
+		<level value="all" />
+		<appender-ref ref="FILE" />
+	</logger>
+  
+  <root level="ALL">
+    <appender-ref ref="FILE" />
+  </root>
+
+</configuration>

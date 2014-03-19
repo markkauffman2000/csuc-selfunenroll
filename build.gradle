@@ -1,0 +1,95 @@
+apply plugin: "java"
+apply plugin: "war"
+apply plugin: "maven"
+
+// define the version for the project when publishing to maven
+group "edu.csuchico.selfunenroll"
+version "2014.03.19.0926"
+
+// ensure jdk1.6 compatible
+//sourceCompatibility=1.6
+//targetCompatibility=1.6
+
+project.ext {
+    learnVersion = "9.1.110082.0"
+    //learnVersion = "9.1.130093.0"
+	springVersion = "3.1.1.RELEASE"
+	hibernateVersion = "4.1.10.Final"
+}
+
+repositories {
+	mavenCentral()
+//	maven { url "https://bbprepo.blackboard.com/content/repositories/releases/" }
+	maven { url "https://maven.blackboard.com/content/repositories/releases/" }
+}
+
+configurations { buildUtils }
+
+def logbackVersion	= '1.0.13'
+def logbackClassic 	= "ch.qos.logback:logback-classic:${logbackVersion}"
+def logbackCore 	=  "ch.qos.logback:logback-core:${logbackVersion}"
+
+def slf4jVersion = '1.6.6'
+def slf4jAPI     = "org.slf4j:slf4j-api:${slf4jVersion}"
+def slf4jJCL     = "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+def slf4jLog4J   = "org.slf4j:slf4j-log4j12:${slf4jVersion}"
+
+
+
+// define the project's dependencies
+dependencies {
+	providedCompile( "javax.servlet:servlet-api:2.5" )
+	
+	// providedCompile dependencies are libraries needed to build, but should not be included in the B2 WAR.
+	providedCompile( "blackboard.platform:bb-platform:$ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-cms-admin:$ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-taglibs:$ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-bbxythos:$ext.learnVersion" ) { transitive = false }
+	
+	compile(logbackClassic)
+	compile(logbackCore)
+	
+	compile(slf4jAPI)
+	compile(slf4jJCL)
+	compile(slf4jLog4J)
+
+	compile( "commons-io:commons-io:2.4" )
+	compile( "org.apache.commons:commons-lang3:3.1" )
+	compile( "blackboard.platform:bb-spring-webapi:$ext.learnVersion" ) { transitive = false }
+
+	compile "org.springframework:spring-aop:$ext.springVersion",
+			"org.springframework:spring-asm:$ext.springVersion",
+			"org.springframework:spring-beans:$ext.springVersion",
+			"org.springframework:spring-context:$ext.springVersion",
+			"org.springframework:spring-core:$ext.springVersion",
+			"org.springframework:spring-expression:$ext.springVersion",
+			"org.springframework:spring-web:$ext.springVersion",
+			"org.springframework:spring-webmvc:$ext.springVersion",
+			"org.springframework:spring-context-support:$ext.springVersion",
+			"org.springframework:spring-jdbc:$ext.springVersion",
+			"org.springframework:spring-orm:$ext.springVersion",
+			"org.springframework:spring-tx:$ext.springVersion"
+
+	compile( "org.hibernate:hibernate-core:$ext.hibernateVersion" ) { transitive = true }
+	compile "org.hibernate:hibernate-entitymanager:$ext.hibernateVersion"
+
+    compile group: 'org.ostermiller', name: 'utils', version: '1.07.00'
+    
+	runtime "org.javassist:javassist:3.17.1-GA", "dom4j:dom4j:1.6.1"
+
+	buildUtils "org.oscelot:b2deploy-task:0.1.0"
+}
+
+def tomcatHome = "C:/springsource/vfabric-tc-server-developer-2.9.2.RELEASE/tcServer1"
+
+task deployToLocalTomcat(type: Copy) {
+    from war
+    into "${tomcatHome}/webapps"
+}
+
+// Add a task to deploy a B2 using starting block
+task deployB2( dependsOn: "war" ) << {
+	ant.taskdef( name: "b2deploy", classname: "org.oscelot.ant.B2DeployTask", classpath: project.configurations.buildUtils.asPath )
+	ant.b2deploy( localfilepath: project.war.archivePath, host: "localhost:9876", courseorgavailable: 'true', clean: 'true' )
+}
+

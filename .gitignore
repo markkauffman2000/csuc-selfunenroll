@@ -1,0 +1,9 @@
+*.class
+*.log
+*.war
+.gradle/
+build/
+target/
+/build
+/build
+/bin

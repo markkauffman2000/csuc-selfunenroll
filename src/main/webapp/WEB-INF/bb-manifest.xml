@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<manifest>
+	<plugin>
+		<name value="selfunenroll" />
+		<description value="selfunenroll" />
+		<handle value="selfunenroll" />
+		<version value="2014.03.19.0926" />
+		<requires>
+			<bbversion value="9.1.0.0" />
+		</requires>
+		<vendor>
+			<id value="csuc" />
+			<name value="CSU, Chico" />
+			<url value="http://www.csuchico.edu" />
+			<description value="CSU, Chico" />
+		</vendor>
+		
+	<module-defs>
+      <module-type ext-ref="selfunenroll-module"
+        title="Remove My Enrollment Module-Type" >
+        <jsp-dir>modules</jsp-dir>
+        <jsp>
+          <view>view</view>          
+        </jsp>
+      </module-type>
+      <module type="selfunenroll-module" isadmin="false" isavailabletoorganization="true" 
+        useraddable="true" isdeletable="true" isdetachable="false" 
+        title="Remove My Enrollment" isasync="false" >
+        <description>
+          Remove My Enrollment allows one to remove one's enrollment from a self-enroll course.
+        </description>
+            <ExtraInfo/> 
+        <module-groups>
+          <module-group id="EVERYONE" /> 
+        </module-groups>
+      </module>
+      
+    </module-defs>
+		
+
+		<!-- Extension tools definition -->
+		<!--  Our template was a course tool, but we're not using that code here. -->
+		<application-defs>
+			<!--  application handle="selfunenroll" type="course" use-ssl="false"
+				name="selfunenroll" can-allow-guest="false" small-icon=""
+				large-icon="" is-course-tool="true">
+				<description lang="en_US">selfunenroll</description>
+				<links>
+					<link>
+                        <type value="course_tool"/>
+                        <name value="selfunenroll link Example Course tool"/>
+                        <url value="showtime" />
+                        <description value="selfunenroll link description An Example course Tool" />
+                    </link>
+				</links>
+			</application -->
+		</application-defs>
+
+		<!-- Schema Directories -->
+		<schema-dirs>
+			<schema-dir dir-name="csuc_audit" />
+		</schema-dirs>
+
+		<permissions>
+			<permission type="blackboard.data.AttributePermission" name="sessionmanager" actions="get" />
+			<permission type="attribute" name="user.personalinfo" actions="get,set" />
+			<permission type="persist" name="groupmembership" actions="create" />
+			<permission type="attribute" name="user.authinfo" actions="get" />
+			<permission type="java.util.PropertyPermission" name="*" actions="read,write" />
+
+			<!-- Minimum permissions to support Spring -->
+			<permission type="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" />
+			<permission type="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+			<permission type="java.lang.RuntimePermission" name="createClassLoader" />
+			<permission type="java.lang.RuntimePermission" name="setContextClassLoader" />
+			
+			<!--  Boilerplate, cut back on these once code works
+			<permission type="attribute" name="user.authinfo" actions="get,set" /> 
+			<permission type="attribute" name="user.personalinfo" actions="get,set" /> 
+			<permission type="java.io.FilePermission" name="../../../content/vi/bb_bb60/sessions/-" actions="write"/>
+			<permission type="java.io.FilePermission" name="../../../content/vi/BBLEARN/sessions/-" actions="write"/>
+			<permission type="java.io.FilePermission" name="../../../content/vi/bb_bb60/recyclebin/-" actions="write,delete"/>
+			<permission type="java.io.FilePermission" name="../../../content/vi/BBLEARN/recyclebin/-" actions="write,delete"/>
+			<permission type="java.io.FilePermission" name="../../../apps/tomcat/temp/-" actions="write,delete"/>
+			<permission type="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" />
+			<permission type="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" actions="" />
+			<permission type="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.jasper.runtime" />
+			<permission type="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.jasper.runtime.*" actions="" />
+			<permission type="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+			<permission type="java.lang.RuntimePermission" name="createClassLoader" />
+			<permission type="java.lang.RuntimePermission" name="getAttribute" />
+			<permission type="java.lang.RuntimePermission" name="getClassLoader" />
+			<permission type="java.lang.RuntimePermission" name="setContextClassLoader" />
+			<permission type="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.*" actions="" />
+			<permission type="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc" />
+			<permission type="java.lang.RuntimePermission" name="accessClassInPackage.sun.security.*" actions="" />
+			<permission type="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+			<permission type="java.lang.RuntimePermission" name="accessDeclaredMembers" actions="" />
+			<permission type="java.lang.RuntimePermission" name="createClassLoader" actions="" />
+			<permission type="java.lang.RuntimePermission" name="createClassLoader" actions="create" />
+			<permission type="java.lang.RuntimePermission" name="db.connection.*" />
+			<permission type="java.lang.RuntimePermission" name="getClassLoader" actions="" />
+			<permission type="java.lang.RuntimePermission" name="getProtectionDomain" actions="" />
+			<permission type="java.lang.RuntimePermission" name="setFactory" actions="" />
+			<permission type="java.lang.RuntimePermission" name="stopThread" /><permission type="java.lang.RuntimePermission" name="stopThread" actions=""/>
+			<permission type="java.net.SocketPermission" name="*" actions="resolve,connect" />
+			<permission type="persist" name="content" actions="persist" />
+			<permission type="persist" name="course" actions="create,modify,delete" /> 
+			<permission type="persist" name="user" actions="create,modify,delete" />
+			<permission type="persist" name="userrole" actions="create,modify,delete" />
+			<permission type="socket" name="*" actions="connect,resolve" / -->
+			
+			<!--  For logback logging -->
+			<permission type="java.io.FilePermission" name="${java.home}/lib/*" actions="read" />
+			<permission type="java.io.FilePermission" name="BB_HOME/logs/-" actions="read,write" />
+
+		</permissions>
+	</plugin>
+</manifest>
+
