@@ -1,12 +1,21 @@
 package edu.csuchico.selfunenroll;
 
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +26,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 // import com.blackboard.consulting.web.ModuleController;
 
+
+
+
+import edu.csuchico.audit.AuditDAO;
 import blackboard.data.ReceiptOptions;
 import blackboard.data.course.Course;
 import blackboard.persist.Id;
@@ -30,9 +43,20 @@ import blackboard.util.UrlUtil;
 
 @Controller
 @RequestMapping( value = "/modules" )
-public class ModuleController {
+public class ModuleController implements ApplicationContextAware{
 	private static final Logger log = LoggerFactory.getLogger(ModuleController.class);
 
+	ApplicationContext applicationContext = null;
+	
+	// The following is to implement ApplicationContextAware
+    // It's possible we don't need this because we can use @Value to get the 
+    // properties we want...
+    @Override
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
+        System.out.println("setting context");
+        this.applicationContext = applicationContext;
+    }
+	
 	/*
 	* ACTION TO LOAD Module View Page
 	*/
@@ -41,6 +65,10 @@ public class ModuleController {
 		HttpServletResponse response, ModelMap model) {
 		
 		log.debug("Starting view Module target.....");
+		
+		ApplicationContext appContext = new ClassPathXmlApplicationContext("Beans.xml");
+
+		
 		ModelAndView mav = new ModelAndView();
 		
 		mav.setViewName("modules/view-module"); 
@@ -48,6 +76,11 @@ public class ModuleController {
 	    if(null==ro){
 	        ro = new ReceiptOptions();
 	    }
+	    	    
+		Properties configProps = (Properties) appContext.getBean("config");
+		
+		String b2handle = configProps.getProperty("b2handle");
+		model.addAttribute("b2handle", b2handle);
 	    
 	    Context ctx = ContextManagerFactory.getInstance().getContext();
 
@@ -65,6 +98,7 @@ public class ModuleController {
 	      // Boolean showCourseName = (Boolean) cd.getObjectValue("showCourseName");
 	      
 	      model.addAttribute( "courses", crsList );
+	      
 	      //model.addAttribute( "showCourseName", (showCourseName==null?false:showCourseName));
 	      
 	    }

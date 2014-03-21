@@ -9,7 +9,7 @@
 Couldn't get the following spring tag to work, so we're sticking with the jstl/fmt.
 <spring:message code="introduction" />
 --%>
-
+<p>b2handle:${b2handle}</p>
 <fmt:setBundle basename="messages" var="lang"/>
 <fmt:message key="introduction" bundle="${lang}"/>
 
