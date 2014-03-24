@@ -1,5 +1,6 @@
 package edu.csuchico.selfunenroll;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -11,11 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +28,13 @@ import org.springframework.web.servlet.view.RedirectView;
 
 
 
+
+
+import edu.csuchico.audit.AuditBean;
 import edu.csuchico.audit.AuditDAO;
 import blackboard.data.ReceiptOptions;
 import blackboard.data.course.Course;
+import blackboard.data.course.Organization;
 import blackboard.persist.Id;
 import blackboard.persist.course.CourseDbLoader;
 import blackboard.platform.context.Context;
@@ -67,7 +70,15 @@ public class ModuleController implements ApplicationContextAware{
 		log.debug("Starting view Module target.....");
 		
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("Beans.xml");
-
+        // Get the B2 handle from our config.properties file.
+		Properties configProps = (Properties) appContext.getBean("config");		
+		String b2handle = configProps.getProperty("config.b2handle");
+		model.addAttribute("b2handle", b2handle);
+		
+		// Log what the user did in the Audit table.
+		AuditDAO ado = (AuditDAO) appContext.getBean("auditDAO");
+		AuditBean auditBean = new AuditBean(b2handle, "view");
+		ado.save(auditBean);
 		
 		ModelAndView mav = new ModelAndView();
 		
@@ -76,11 +87,6 @@ public class ModuleController implements ApplicationContextAware{
 	    if(null==ro){
 	        ro = new ReceiptOptions();
 	    }
-	    	    
-		Properties configProps = (Properties) appContext.getBean("config");
-		
-		String b2handle = configProps.getProperty("b2handle");
-		model.addAttribute("b2handle", b2handle);
 	    
 	    Context ctx = ContextManagerFactory.getInstance().getContext();
 
@@ -91,13 +97,16 @@ public class ModuleController implements ApplicationContextAware{
 	      CourseDbLoader crsLoader = CourseDbLoader.Default.getInstance();
 	      
 	      List<Course> crsList = crsLoader.loadByUserId( userId );
+	      List<Course> crsDisplayList = new ArrayList<Course>();
 	      
-	      //Load module personalization data
-	      //CustomData cd = CustomData.getModulePersonalizationData( request );
-	      //Read settings
-	      // Boolean showCourseName = (Boolean) cd.getObjectValue("showCourseName");
+	      for (Course c: crsList){
+	    	  if (c.getEnrollmentType() == Course.Enrollment.SELF_ENROLLMENT)
+	    	  {
+	    		  crsDisplayList.add(c);
+	    	  }
+	      }
 	      
-	      model.addAttribute( "courses", crsList );
+	      model.addAttribute( "courses", crsDisplayList );
 	      
 	      //model.addAttribute( "showCourseName", (showCourseName==null?false:showCourseName));
 	      

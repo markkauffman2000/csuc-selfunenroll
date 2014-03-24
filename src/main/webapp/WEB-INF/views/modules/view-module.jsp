@@ -9,14 +9,14 @@
 Couldn't get the following spring tag to work, so we're sticking with the jstl/fmt.
 <spring:message code="introduction" />
 --%>
-<p>b2handle:${b2handle}</p>
+
 <fmt:setBundle basename="messages" var="lang"/>
 <fmt:message key="introduction" bundle="${lang}"/>
 
-<bbNG:miniList items="${courses}" rowHeaderId="courseId" var="crs" className="blackboard.data.course.Course" >
+<bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
 	
-    	<bbNG:miniListElement id="courseId" title="Course Id">
-    		<font color="${color}">${crs.courseId}</font>
+    	<bbNG:miniListElement id="courseTitle" title="Course Title">
+    		<font color="${color}">${crs.title}</font>
     	</bbNG:miniListElement>
     
 </bbNG:miniList> 

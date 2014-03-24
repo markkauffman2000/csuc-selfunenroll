@@ -6,7 +6,7 @@
 		<name value="selfunenroll" />
 		<description value="selfunenroll" />
 		<handle value="selfunenroll" />
-		<version value="2014.03.21.1535" />
+		<version value="2014.03.24.1510" />
 		<requires>
 			<bbversion value="9.1.0.0" />
 		</requires>

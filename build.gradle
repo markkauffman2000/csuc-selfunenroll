@@ -4,7 +4,7 @@ apply plugin: "maven"
 
 // define the version for the project when publishing to maven
 group "edu.csuchico.selfunenroll"
-version "2014.03.21.1535"
+version "2014.03.24.1510"
 
 // ensure jdk1.6 compatible
 //sourceCompatibility=1.6
