@@ -34,9 +34,12 @@ import edu.csuchico.audit.AuditBean;
 import edu.csuchico.audit.AuditDAO;
 import blackboard.data.ReceiptOptions;
 import blackboard.data.course.Course;
+import blackboard.data.course.CourseMembership;
+import blackboard.data.course.CourseMembership.Role;
 import blackboard.data.course.Organization;
 import blackboard.persist.Id;
 import blackboard.persist.course.CourseDbLoader;
+import blackboard.persist.course.CourseMembershipDbLoader;
 import blackboard.platform.context.Context;
 import blackboard.platform.context.ContextManagerFactory; 
 import blackboard.platform.servlet.InlineReceiptUtil;
@@ -95,14 +98,19 @@ public class ModuleController implements ApplicationContextAware{
 	    try
 	    {
 	      CourseDbLoader crsLoader = CourseDbLoader.Default.getInstance();
+	      CourseMembershipDbLoader memLoader = CourseMembershipDbLoader.Default.getInstance();
 	      
 	      List<Course> crsList = crsLoader.loadByUserId( userId );
+
 	      List<Course> crsDisplayList = new ArrayList<Course>();
 	      
 	      for (Course c: crsList){
 	    	  if (c.getEnrollmentType() == Course.Enrollment.SELF_ENROLLMENT)
 	    	  {
-	    		  crsDisplayList.add(c);
+	    		  CourseMembership mem = memLoader.loadByCourseAndUserId(c.getId(), userId);
+	    		  Role role = mem.getRole();
+	    		  if (role.equals(CourseMembership.Role.STUDENT))
+	    			  crsDisplayList.add(c);
 	    	  }
 	      }
 	      

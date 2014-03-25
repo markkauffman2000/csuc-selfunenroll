@@ -14,6 +14,11 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
 <fmt:message key="introduction" bundle="${lang}"/>
 
 <bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
+       
+       	<bbNG:miniListElement id="courseId" title="Course ID">
+  			<font color="${color}">${crs.courseId}</font>
+  		</bbNG:miniListElement>
+  	
 	
     	<bbNG:miniListElement id="courseTitle" title="Course Title">
     		<font color="${color}">${crs.title}</font>
