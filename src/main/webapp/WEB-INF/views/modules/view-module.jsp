@@ -5,11 +5,25 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <bbNG:includedPage>
+
+    
 <bbNG:jsBlock> 
+    <script type="text/javascript" src="/js/jquery-1.11.0.js"></script> 
+    <script type="text/javascript" src="/js/jquery.blockUI.js"></script>
+
     <script type="text/javascript">
-    	function confirmRemove()
+
+    	function confirmRemove(message, url)
     	{
-    		alert("Are you certain?");
+    		
+    	    if (typeof jQuery != 'undefined' ) {
+    	        alert("jQuery is loaded.");
+    	    }  else {
+    	    	alert("jQuery is not loaded.");
+    	    } 
+    	    
+    		var result = confirm(message);
+    		if (result == true){window.top.location.assign(url);}
     	}
     </script>
 </bbNG:jsBlock>
@@ -25,7 +39,7 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
 <bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
        	
     	<bbNG:miniListElement id="courseTitle" title="Course Title">
-    	    <bbNG:button url="javascript:confirmRemove()" label="Remove" />
+    	    <bbNG:button url="javascript:confirmRemove('REally?','http://www.microsoft.com')" label="Remove" />
     		<font color="${color}">${crs.title} </font>
 
     	</bbNG:miniListElement>
