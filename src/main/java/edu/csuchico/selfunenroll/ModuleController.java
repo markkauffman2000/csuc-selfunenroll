@@ -30,6 +30,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 
 
+
 import edu.csuchico.audit.AuditBean;
 import edu.csuchico.audit.AuditDAO;
 import blackboard.data.ReceiptOptions;
@@ -42,6 +43,7 @@ import blackboard.persist.course.CourseDbLoader;
 import blackboard.persist.course.CourseMembershipDbLoader;
 import blackboard.platform.context.Context;
 import blackboard.platform.context.ContextManagerFactory; 
+import blackboard.platform.plugin.PlugInUtil;
 import blackboard.platform.servlet.InlineReceiptUtil;
 import blackboard.portal.external.CustomData;
 import blackboard.util.UrlUtil;
@@ -77,6 +79,10 @@ public class ModuleController implements ApplicationContextAware{
 		Properties configProps = (Properties) appContext.getBean("config");		
 		String b2handle = configProps.getProperty("config.b2handle");
 		model.addAttribute("b2handle", b2handle);
+
+		String jqueryURIstring = PlugInUtil.getUri("csuc", b2handle, "js/jquery-1.11.0.js");
+		model.addAttribute("jqueryURIstring", jqueryURIstring);
+		
 		
 		// Log what the user did in the Audit table.
 		AuditDAO ado = (AuditDAO) appContext.getBean("auditDAO");
