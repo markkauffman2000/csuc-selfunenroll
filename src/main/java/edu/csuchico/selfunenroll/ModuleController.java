@@ -38,6 +38,7 @@ import blackboard.data.course.Course;
 import blackboard.data.course.CourseMembership;
 import blackboard.data.course.CourseMembership.Role;
 import blackboard.data.course.Organization;
+import blackboard.data.user.User;
 import blackboard.persist.Id;
 import blackboard.persist.course.CourseDbLoader;
 import blackboard.persist.course.CourseMembershipDbLoader;
@@ -73,6 +74,11 @@ public class ModuleController implements ApplicationContextAware{
 		HttpServletResponse response, ModelMap model) {
 		
 		log.debug("Starting view Module target.....");
+		String action = request.getParameter("action");
+		if (action != null && action != ""){
+			model.addAttribute("action",action);
+		} else
+			model.addAttribute("action", "view");
 		
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("Beans.xml");
         // Get the B2 handle from our config.properties file.
@@ -82,6 +88,9 @@ public class ModuleController implements ApplicationContextAware{
 
 		String jqueryURIstring = PlugInUtil.getUri("csuc", b2handle, "js/jquery-1.11.0.js");
 		model.addAttribute("jqueryURIstring", jqueryURIstring);
+		
+		String removeURIstring = PlugInUtil.getUri("csuc",b2handle, "modules/view");
+		model.addAttribute("removeURIstring",removeURIstring+"?action=remove");
 		
 		
 		// Log what the user did in the Audit table.
@@ -100,6 +109,10 @@ public class ModuleController implements ApplicationContextAware{
 	    Context ctx = ContextManagerFactory.getInstance().getContext();
 
 	    Id userId = ctx.getUserId();
+	    // User is an object.  The User has a userName which Chico calls the portal ID.
+	    User user = ctx.getUser(); 
+	    String userName = user.getUserName();
+	    model.addAttribute("userName",userName);
 	    
 	    try
 	    {
@@ -133,8 +146,7 @@ public class ModuleController implements ApplicationContextAware{
 	    
 	    InlineReceiptUtil.addReceiptToRequest(request, ro); 
 		return mav;
-	}
-	
+	}  // end ACTION to view the Module
 	
 
 	/*

@@ -15,7 +15,7 @@
 
     <script type="text/javascript">
 
-    	function confirmRemove(message, courseId)
+    	function confirmRemove(userName, courseId, message)
     	{   	    
 		    $j(function () {
 	    	    if (typeof jQuery != 'undefined' ) {
@@ -25,12 +25,19 @@
 	    	    } 
 	    	    
 	    		var result = confirm(message);
-	    		if (result == true){alert("Removing " + courseId);}
+	    		if (result == true){
+	    			alert("Removing " +userName + " enrollment in " + courseId);
+	    			alert('Setting location to: ' + "${removeURIstring}" );
+	    			location.assign("${removeURIstring}");
+	    		}
+	    		
 		 	});
     		
     	}
     </script>
 </bbNG:jsBlock>
+action: "${action}"
+jqueryURIString: "${jqueryURIstring}"
 
 <%--
 Couldn't get the following spring tag to work, so we're sticking with the jstl/fmt.
@@ -43,7 +50,7 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
 <bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
 
     	<bbNG:miniListElement id="courseTitle" title="Course Title">
-	    	    <bbNG:button url="javascript:confirmRemove('REally?','${crs.courseId}')" label="Remove" />
+	    	    <bbNG:button url="javascript:confirmRemove('${userName}', '${crs.courseId}', 'REally?')" label="Remove" />
 	    		<font color="${color}">${crs.title} </font>
     	</bbNG:miniListElement>
     
