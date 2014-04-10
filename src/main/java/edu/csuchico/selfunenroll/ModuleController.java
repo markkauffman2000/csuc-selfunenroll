@@ -54,7 +54,7 @@ import blackboard.util.UrlUtil;
 @RequestMapping( value = "/modules" )
 public class ModuleController implements ApplicationContextAware{
 	private static final Logger log = LoggerFactory.getLogger(ModuleController.class);
-
+	
 	ApplicationContext applicationContext = null;
 	
 	// The following is to implement ApplicationContextAware
@@ -73,12 +73,21 @@ public class ModuleController implements ApplicationContextAware{
 	public ModelAndView view(HttpServletRequest request,
 		HttpServletResponse response, ModelMap model) {
 		
+		CourseMembershipDbLoader memLoader;
+		CourseDbLoader crsLoader;
+		
 		log.debug("Starting view Module target.....");
 		String action = request.getParameter("action");
 		if (action != null && action != ""){
 			model.addAttribute("action",action);
 		} else
 			model.addAttribute("action", "view");
+		
+		String courseId = request.getParameter("courseId");
+		if (courseId != null && courseId != ""){
+			model.addAttribute("courseId",courseId);
+		} else
+			model.addAttribute("courseId", "NA");
 		
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("Beans.xml");
         // Get the B2 handle from our config.properties file.
@@ -90,7 +99,8 @@ public class ModuleController implements ApplicationContextAware{
 		model.addAttribute("jqueryURIstring", jqueryURIstring);
 		
 		String removeURIstring = PlugInUtil.getUri("csuc",b2handle, "modules/view");
-		model.addAttribute("removeURIstring",removeURIstring+"?action=remove");
+		removeURIstring = removeURIstring + "?action=remove";
+		model.addAttribute("removeURIstring",removeURIstring);
 		
 		
 		// Log what the user did in the Audit table.
@@ -114,11 +124,34 @@ public class ModuleController implements ApplicationContextAware{
 	    String userName = user.getUserName();
 	    model.addAttribute("userName",userName);
 	    
+
+    	try
+    	{
+    		memLoader = CourseMembershipDbLoader.Default.getInstance();
+    		crsLoader = CourseDbLoader.Default.getInstance();
+    	    if (action.equals("remove") && !courseId.equals("NA"))
+    	    {
+    	    	// Remove the user's enrollment in this courseId before getting their list.
+    	    	// We may want to move this to a remove action that then pulls the same view
+    	    	// after the removal.
+    	    	 Course theCourse = crsLoader.loadByCourseId(courseId);
+    	    	 CourseMembership mem = memLoader.loadByCourseAndUserId(theCourse.getId(), userId);
+    	    	 mem.setIsAvailable(false);
+    	    	 mem.persist();
+    	    }//  if (action.equals("remove") && !courseId.equals("NA"))
+    	}
+    	catch ( Exception e )
+    	{
+    	        ro.addErrorMessage("Exception raised getting CourseMembershipDbLoader. [Error = "+e.getLocalizedMessage()+"]", e);
+    	        e.printStackTrace();
+    	}
+	    
+
+	    
 	    try
 	    {
-	      CourseDbLoader crsLoader = CourseDbLoader.Default.getInstance();
-	      CourseMembershipDbLoader memLoader = CourseMembershipDbLoader.Default.getInstance();
-	      
+	      crsLoader = CourseDbLoader.Default.getInstance();
+	      memLoader = CourseMembershipDbLoader.Default.getInstance();
 	      List<Course> crsList = crsLoader.loadByUserId( userId );
 
 	      List<Course> crsDisplayList = new ArrayList<Course>();

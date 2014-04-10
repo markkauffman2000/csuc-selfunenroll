@@ -27,16 +27,25 @@
 	    		var result = confirm(message);
 	    		if (result == true){
 	    			alert("Removing " +userName + " enrollment in " + courseId);
-	    			alert('Setting location to: ' + "${removeURIstring}" );
-	    			location.assign("${removeURIstring}");
-	    		}
+	    			alert('jQuery Get To: ' + "${removeURIstring}" + "&course="+courseId);
+						
+	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
+	    				alert( "Remove was performed." );
+	    				alert(data);
+	    				top.location.reload();		
+	    			}); //$j.get
 	    		
-		 	});
+	    		}// if (result == true)
+	    		
+		 	}); //$j(function())
     		
     	}
     </script>
 </bbNG:jsBlock>
+
 action: "${action}"
+courseId: "${courseId}"
+removeURIstring: "${removeURIstring}"
 jqueryURIString: "${jqueryURIstring}"
 
 <%--
@@ -55,4 +64,5 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
     	</bbNG:miniListElement>
     
 </bbNG:miniList> 
+
 </bbNG:includedPage>
