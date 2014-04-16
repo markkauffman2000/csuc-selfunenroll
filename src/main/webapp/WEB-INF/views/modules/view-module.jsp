@@ -31,7 +31,6 @@
 						
 	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
 	    				alert( "Remove was performed." );
-	    				alert(data);
 	    				top.location.reload();		
 	    			}); //$j.get
 	    		
@@ -42,12 +41,6 @@
     	}
     </script>
 </bbNG:jsBlock>
-
-action: "${action}"
-courseId: "${courseId}"
-removeURIstring: "${removeURIstring}"
-jqueryURIString: "${jqueryURIstring}"
-<p>debugString: "${debugString}" </p>
 
 <%--
 Couldn't get the following spring tag to work, so we're sticking with the jstl/fmt.

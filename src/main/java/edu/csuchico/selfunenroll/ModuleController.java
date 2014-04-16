@@ -72,8 +72,6 @@ public class ModuleController implements ApplicationContextAware{
 	public ModelAndView view(HttpServletRequest request,
 		HttpServletResponse response, ModelMap model) {
 		
-		String debugString = "";
-		
 		EnrollmentLoader enLoader;
 		CourseDbLoader crsLoader;
 		
@@ -90,7 +88,6 @@ public class ModuleController implements ApplicationContextAware{
 			courseId = "NA";
 		}
 		model.addAttribute("courseId",courseId);
-	    debugString += "courseId is:" + courseId +"|";
 		
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("Beans.xml");
         // Get the B2 handle from our config.properties file.
@@ -129,44 +126,31 @@ public class ModuleController implements ApplicationContextAware{
 	    String userName = user.getUserName();
 	    model.addAttribute("userName",userName);
 	    
-	    debugString += "Entering try block to check if action.equals remove|";
     	try
     	{
     		enLoader = EnrollmentLoader.Default.getInstance();
     		crsLoader = CourseDbLoader.Default.getInstance();
-    		debugString += "Checking for remove action|";
+
     	    if (action.equals("remove") && !courseId.equals("NA"))
     	    {
-    	    	debugString += "Action was remove|";
+
     	    	// Remove the user's enrollment in this courseId before getting their list.
     	    	// We may want to move this to a remove action that then pulls the same view
     	    	// after the removal.
     	    	 Course theCourse = crsLoader.loadByCourseId(courseId);
-    	    	 debugString += "got theCourse|";
+
     	    	 Enrollment en = enLoader.load(theCourse.getBatchUid(), userBatchUid);
-    	    	 debugString += "got the membership|";
-    	    	 if (en == null)
-    	    		 debugString += "en was null!|";
-    	    	 else
-    	    		 debugString += "en was NOT null.|";
-    	    	 debugString += "en.toString:" + en.toString() + "|";
-    	    	 
     	    	 en.setRowStatus(RowStatus.DISABLED);
-    	    	 debugString += "en.setRowStatus(DISABLED)|";
     	    	 EnrollmentPersister enPer = EnrollmentPersister.Default.getInstance();
-    	    	 debugString += "got EnrollmentPersister|";
     	    	 enPer.save(en);
-    	    	 debugString += "enPer.save(en) complete!|";
     	    }//  if (action.equals("remove") && !courseId.equals("NA"))
     	}
     	catch ( Exception e )
     	{
     	        ro.addErrorMessage("Exception raised getting CourseMembershipDbLoader. [Error = "+e.getLocalizedMessage()+"]", e);
     	        e.printStackTrace();
-    	        debugString += e.getLocalizedMessage();
     	}
-	    
-    	model.addAttribute("debugString",debugString);
+
 	    
 	    try
 	    {
