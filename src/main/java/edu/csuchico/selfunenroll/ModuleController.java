@@ -25,11 +25,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 // import com.blackboard.consulting.web.ModuleController;
 
-
-
-
-
-
+import blackboard.admin.data.IAdminObject.RowStatus;
+import blackboard.admin.data.course.Enrollment;
+import blackboard.admin.persist.course.EnrollmentLoader;
+import blackboard.admin.persist.course.EnrollmentPersister;
 
 import edu.csuchico.audit.AuditBean;
 import edu.csuchico.audit.AuditDAO;
@@ -73,21 +72,25 @@ public class ModuleController implements ApplicationContextAware{
 	public ModelAndView view(HttpServletRequest request,
 		HttpServletResponse response, ModelMap model) {
 		
-		CourseMembershipDbLoader memLoader;
+		String debugString = "";
+		
+		EnrollmentLoader enLoader;
 		CourseDbLoader crsLoader;
 		
 		log.debug("Starting view Module target.....");
 		String action = request.getParameter("action");
-		if (action != null && action != ""){
-			model.addAttribute("action",action);
-		} else
-			model.addAttribute("action", "view");
+		if (action == null || action.equals("")){
+			action = "NA";
+		}
+		model.addAttribute("action", action);
+
 		
 		String courseId = request.getParameter("courseId");
-		if (courseId != null && courseId != ""){
-			model.addAttribute("courseId",courseId);
-		} else
-			model.addAttribute("courseId", "NA");
+		if (courseId == null || courseId.equals("")){
+			courseId = "NA";
+		}
+		model.addAttribute("courseId",courseId);
+	    debugString += "courseId is:" + courseId +"|";
 		
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("Beans.xml");
         // Get the B2 handle from our config.properties file.
@@ -120,38 +123,55 @@ public class ModuleController implements ApplicationContextAware{
 
 	    Id userId = ctx.getUserId();
 	    // User is an object.  The User has a userName which Chico calls the portal ID.
-	    User user = ctx.getUser(); 
+	    User user = ctx.getUser();
+	    String userBatchUid = user.getBatchUid();
+
 	    String userName = user.getUserName();
 	    model.addAttribute("userName",userName);
 	    
-
+	    debugString += "Entering try block to check if action.equals remove|";
     	try
     	{
-    		memLoader = CourseMembershipDbLoader.Default.getInstance();
+    		enLoader = EnrollmentLoader.Default.getInstance();
     		crsLoader = CourseDbLoader.Default.getInstance();
+    		debugString += "Checking for remove action|";
     	    if (action.equals("remove") && !courseId.equals("NA"))
     	    {
+    	    	debugString += "Action was remove|";
     	    	// Remove the user's enrollment in this courseId before getting their list.
     	    	// We may want to move this to a remove action that then pulls the same view
     	    	// after the removal.
     	    	 Course theCourse = crsLoader.loadByCourseId(courseId);
-    	    	 CourseMembership mem = memLoader.loadByCourseAndUserId(theCourse.getId(), userId);
-    	    	 mem.setIsAvailable(false);
-    	    	 mem.persist();
+    	    	 debugString += "got theCourse|";
+    	    	 Enrollment en = enLoader.load(theCourse.getBatchUid(), userBatchUid);
+    	    	 debugString += "got the membership|";
+    	    	 if (en == null)
+    	    		 debugString += "en was null!|";
+    	    	 else
+    	    		 debugString += "en was NOT null.|";
+    	    	 debugString += "en.toString:" + en.toString() + "|";
+    	    	 
+    	    	 en.setRowStatus(RowStatus.DISABLED);
+    	    	 debugString += "en.setRowStatus(DISABLED)|";
+    	    	 EnrollmentPersister enPer = EnrollmentPersister.Default.getInstance();
+    	    	 debugString += "got EnrollmentPersister|";
+    	    	 enPer.save(en);
+    	    	 debugString += "enPer.save(en) complete!|";
     	    }//  if (action.equals("remove") && !courseId.equals("NA"))
     	}
     	catch ( Exception e )
     	{
     	        ro.addErrorMessage("Exception raised getting CourseMembershipDbLoader. [Error = "+e.getLocalizedMessage()+"]", e);
     	        e.printStackTrace();
+    	        debugString += e.getLocalizedMessage();
     	}
 	    
-
+    	model.addAttribute("debugString",debugString);
 	    
 	    try
 	    {
 	      crsLoader = CourseDbLoader.Default.getInstance();
-	      memLoader = CourseMembershipDbLoader.Default.getInstance();
+	      enLoader = EnrollmentLoader.Default.getInstance();
 	      List<Course> crsList = crsLoader.loadByUserId( userId );
 
 	      List<Course> crsDisplayList = new ArrayList<Course>();
@@ -159,11 +179,12 @@ public class ModuleController implements ApplicationContextAware{
 	      for (Course c: crsList){
 	    	  if (c.getEnrollmentType() == Course.Enrollment.SELF_ENROLLMENT)
 	    	  {
-	    		  CourseMembership mem = memLoader.loadByCourseAndUserId(c.getId(), userId);
-	    		  Role role = mem.getRole();
+	    		  Enrollment en = enLoader.load(c.getBatchUid(), userBatchUid);
+	    		  Role role = en.getRole();
 	    		  if (role.equals(CourseMembership.Role.STUDENT))
-	    			  crsDisplayList.add(c);
-	    	  }
+	    			  if (en.getRowStatus() == RowStatus.ENABLED)
+	    			  	crsDisplayList.add(c);
+	    	  }// END if (c.getEnrollmentType()
 	      }
 	      
 	      model.addAttribute( "courses", crsDisplayList );

@@ -27,7 +27,7 @@
 	    		var result = confirm(message);
 	    		if (result == true){
 	    			alert("Removing " +userName + " enrollment in " + courseId);
-	    			alert('jQuery Get To: ' + "${removeURIstring}" + "&course="+courseId);
+	    			alert('jQuery Get To: ' + "${removeURIstring}" + "&courseId="+courseId);
 						
 	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
 	    				alert( "Remove was performed." );
@@ -47,6 +47,7 @@ action: "${action}"
 courseId: "${courseId}"
 removeURIstring: "${removeURIstring}"
 jqueryURIString: "${jqueryURIstring}"
+<p>debugString: "${debugString}" </p>
 
 <%--
 Couldn't get the following spring tag to work, so we're sticking with the jstl/fmt.
