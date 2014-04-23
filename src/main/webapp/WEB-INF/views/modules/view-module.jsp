@@ -26,7 +26,7 @@
 	    	    
 	    		var result = confirm(message);
 	    		if (result == true){
-	    			alert("Removing " +userName + " enrollment in " + courseId);
+
 	    			alert('jQuery Get To: ' + "${removeURIstring}" + "&courseId="+courseId);
 						
 	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
@@ -48,15 +48,20 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
 --%>
 
 <fmt:setBundle basename="messages" var="lang"/>
-<fmt:message key="introduction" bundle="${lang}"/>
 
-<bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
-
-    	<bbNG:miniListElement id="courseTitle" title="Course Title">
+<c:choose>
+<c:when test="${empty courses}">
+	<fmt:message key="nocourses" bundle="${lang}"/>
+</c:when> 
+<c:otherwise>
+    <fmt:message key="introduction" bundle="${lang}"/>
+	<bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
+	   	<bbNG:miniListElement id="courseTitle" title="Course Title">
 	    	    <bbNG:button url="javascript:confirmRemove('${userName}', '${crs.courseId}', 'REally?')" label="Remove" />
 	    		<font color="${color}">${crs.title} </font>
-    	</bbNG:miniListElement>
-    
-</bbNG:miniList> 
+	   	</bbNG:miniListElement>
+	</bbNG:miniList>
+</c:otherwise>  
+</c:choose>
 
 </bbNG:includedPage>
