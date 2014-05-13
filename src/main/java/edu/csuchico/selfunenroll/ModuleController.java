@@ -25,11 +25,12 @@ import org.springframework.web.servlet.view.RedirectView;
 
 // import com.blackboard.consulting.web.ModuleController;
 
+
+import blackboard.admin.data.IAdminObject.RecStatus;
 import blackboard.admin.data.IAdminObject.RowStatus;
 import blackboard.admin.data.course.Enrollment;
 import blackboard.admin.persist.course.EnrollmentLoader;
 import blackboard.admin.persist.course.EnrollmentPersister;
-
 import edu.csuchico.audit.AuditBean;
 import edu.csuchico.audit.AuditDAO;
 import blackboard.data.ReceiptOptions;
@@ -41,6 +42,7 @@ import blackboard.data.user.User;
 import blackboard.persist.Id;
 import blackboard.persist.course.CourseDbLoader;
 import blackboard.persist.course.CourseMembershipDbLoader;
+import blackboard.persist.course.CourseMembershipDbPersister;
 import blackboard.platform.context.Context;
 import blackboard.platform.context.ContextManagerFactory; 
 import blackboard.platform.plugin.PlugInUtil;
@@ -73,6 +75,7 @@ public class ModuleController implements ApplicationContextAware{
 		HttpServletResponse response, ModelMap model) {
 		
 		EnrollmentLoader enLoader;
+		CourseMembershipDbLoader memLoader;
 		CourseDbLoader crsLoader;
 		
 		log.debug("Starting view Module target.....");
@@ -128,6 +131,7 @@ public class ModuleController implements ApplicationContextAware{
 	    
     	try
     	{
+    		memLoader = CourseMembershipDbLoader.Default.getInstance();
     		enLoader = EnrollmentLoader.Default.getInstance();
     		crsLoader = CourseDbLoader.Default.getInstance();
 
@@ -140,9 +144,16 @@ public class ModuleController implements ApplicationContextAware{
     	    	 Course theCourse = crsLoader.loadByCourseId(courseId);
 
     	    	 Enrollment en = enLoader.load(theCourse.getBatchUid(), userBatchUid);
-    	    	 en.setRowStatus(RowStatus.DISABLED);
-    	    	 EnrollmentPersister enPer = EnrollmentPersister.Default.getInstance();
-    	    	 enPer.save(en);
+    	    	 CourseMembership mem = memLoader.loadByCourseAndUserId(theCourse.getId(), userId);
+    	    	
+    	    	 // I'm leaving the enrollment code commented out should we ever decide to DISABLE
+    	    	 // the enrollment instead of deleteing the membership.
+    	    	 CourseMembershipDbPersister.Default.getInstance().deleteById(mem.getId());
+    	    	 // en.setRowStatus(RowStatus.DISABLED);
+    	    	 // en.setRowStatus(RowStatus.SOFT_DELETE);
+    	    	 // en.setRecStatus(RecStatus.DELETE);
+    	    	 // EnrollmentPersister enPer = EnrollmentPersister.Default.getInstance();
+    	    	 // enPer.update(en);  //was enPer.save(en) when we DISABLED...
     	    }//  if (action.equals("remove") && !courseId.equals("NA"))
     	}
     	catch ( Exception e )

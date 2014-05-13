@@ -6,7 +6,6 @@
 
 <bbNG:includedPage>
 
-    
 <bbNG:jsBlock> 
     <script type="text/javascript" src="${jqueryURIstring}"></script>
     <script type="text/javascript">
@@ -15,25 +14,18 @@
 
     <script type="text/javascript">
 
-    	function confirmRemove(userName, courseId, message)
+    	function confirmRemove(userName, courseId, courseTitle, message, askForInput)
     	{   	    
 		    $j(function () {
-	    	    if (typeof jQuery != 'undefined' ) {
-	    	        alert("jQuery is loaded.");
-	    	    }  else {
-	    	    	alert("jQuery is not loaded.");
-	    	    } 
 	    	    
-	    		var result = confirm(message);
-	    		if (result == true){
-
-	    			alert('jQuery Get To: ' + "${removeURIstring}" + "&courseId="+courseId);
-						
+	    		var result = prompt(message + ":\n" + courseTitle + "?\n" + askForInput );
+	    		if (result == "remove"){
+					
 	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
-	    				alert( "Remove was performed." );
 	    				top.location.reload();		
 	    			}); //$j.get
-	    		
+	    			
+					
 	    		}// if (result == true)
 	    		
 		 	}); //$j(function())
@@ -48,6 +40,10 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
 --%>
 
 <fmt:setBundle basename="messages" var="lang"/>
+<fmt:message key="areyousure" var="confirmMessage" bundle="${lang}"/>
+<fmt:message key="askforinput" var="askForInput" bundle="${lang}"/>
+    
+
 
 <c:choose>
 <c:when test="${empty courses}">
@@ -57,7 +53,7 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
     <fmt:message key="introduction" bundle="${lang}"/>
 	<bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
 	   	<bbNG:miniListElement id="courseTitle" title="Course Title">
-	    	    <bbNG:button url="javascript:confirmRemove('${userName}', '${crs.courseId}', 'REally?')" label="Remove" />
+	    	    <bbNG:button url="javascript:confirmRemove('${userName}', '${crs.courseId}', '${crs.title}', '${confirmMessage}', '${askForInput}' )" label="Remove" />
 	    		<font color="${color}">${crs.title} </font>
 	   	</bbNG:miniListElement>
 	</bbNG:miniList>
