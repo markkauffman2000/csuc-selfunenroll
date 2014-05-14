@@ -14,11 +14,11 @@
 
     <script type="text/javascript">
 
-    	function confirmRemove(userName, courseId, courseTitle, message, askForInput)
+    	function confirmRemove(userName, courseId, courseTitle, message, askForInput, contentRemoved)
     	{   	    
 		    $j(function () {
 	    	    
-	    		var result = prompt(message + ":\n" + courseTitle + "?\n" + askForInput );
+	    		var result = prompt(message + ":\n" + courseTitle + "?\n" + askForInput + "\n" + contentRemoved );
 	    		if (result == "remove"){
 					
 	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
@@ -42,6 +42,7 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
 <fmt:setBundle basename="messages" var="lang"/>
 <fmt:message key="areyousure" var="confirmMessage" bundle="${lang}"/>
 <fmt:message key="askforinput" var="askForInput" bundle="${lang}"/>
+<fmt:message key="contentremoved" var="contentRemoved" bundle="${lang}"/>
     
 
 
@@ -53,7 +54,7 @@ Couldn't get the following spring tag to work, so we're sticking with the jstl/f
     <fmt:message key="introduction" bundle="${lang}"/>
 	<bbNG:miniList items="${courses}" rowHeaderId="courseTitle" var="crs" className="blackboard.data.course.Course" >
 	   	<bbNG:miniListElement id="courseTitle" title="Course Title">
-	    	    <bbNG:button url="javascript:confirmRemove('${userName}', '${crs.courseId}', '${crs.title}', '${confirmMessage}', '${askForInput}' )" label="Remove" />
+	    	    <bbNG:button url="javascript:confirmRemove('${userName}', '${crs.courseId}', '${crs.title}', '${confirmMessage}', '${askForInput}', '${contentRemoved}' )" label="Remove" />
 	    		<font color="${color}">${crs.title} </font>
 	   	</bbNG:miniListElement>
 	</bbNG:miniList>

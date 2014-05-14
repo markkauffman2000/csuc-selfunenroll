@@ -106,10 +106,7 @@ public class ModuleController implements ApplicationContextAware{
 		model.addAttribute("removeURIstring",removeURIstring);
 		
 		
-		// Log what the user did in the Audit table.
-		AuditDAO ado = (AuditDAO) appContext.getBean("auditDAO");
-		AuditBean auditBean = new AuditBean(b2handle, "view");
-		ado.save(auditBean);
+
 		
 		ModelAndView mav = new ModelAndView();
 		
@@ -154,6 +151,10 @@ public class ModuleController implements ApplicationContextAware{
     	    	 // en.setRecStatus(RecStatus.DELETE);
     	    	 // EnrollmentPersister enPer = EnrollmentPersister.Default.getInstance();
     	    	 // enPer.update(en);  //was enPer.save(en) when we DISABLED...
+    	 		 // Log what the user did in the Audit table.
+    	 		 AuditDAO ado = (AuditDAO) appContext.getBean("auditDAO");
+    	 		 AuditBean auditBean = new AuditBean(b2handle, "removed enrollment", theCourse.getBatchUid(), theCourse.getTitle());
+    	 		 ado.save(auditBean);
     	    }//  if (action.equals("remove") && !courseId.equals("NA"))
     	}
     	catch ( Exception e )

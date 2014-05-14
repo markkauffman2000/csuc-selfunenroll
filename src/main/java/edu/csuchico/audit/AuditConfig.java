@@ -1,6 +1,6 @@
 package edu.csuchico.audit;
 // Not using this for the moment until we decide whether annotations or xml config are better.
-// We're going to use xml bean config first.
+// Currently using xml config for this bean for our code.  
 import org.springframework.context.annotation.*;
 
 @Configuration
