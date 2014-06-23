@@ -12,28 +12,28 @@
 	
 	<!-- Application Loggers -->
 	<logger name="edu.csuchico.selfunenroll">
-		<level value="all" />
+		<level value="info" />
 		<appender-ref ref="console" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="all" />
+		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
 	
 	<logger name="org.springframework.beans">
-		<level value="all" />
+		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
 	
 	<logger name="org.springframework.context">
-		<level value="all" />
+		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
 
 	<logger name="org.springframework.web">
-		<level value="all" />
+		<level value="error" />
 		<appender-ref ref="console" />
 	</logger>
 

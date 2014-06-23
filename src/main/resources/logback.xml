@@ -21,13 +21,13 @@
   </appender>
 
   <logger name="org.springframework">
-        <level value="all" />
+        <level value="error" />
         <appender-ref ref="FILE" />
   </logger>
 
   
   	<logger name="edu.csuchico.selfunenroll">
-		<level value="all" />
+		<level value="info" />
 		<appender-ref ref="FILE" />
 	</logger>
   
