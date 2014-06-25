@@ -18,7 +18,7 @@
     	{   	    
 		    $j(function () {
 	    	    
-	    		var result = prompt(message + ":\n" + courseTitle + "?\n" + askForInput + "\n" + contentRemoved );
+	    		var result = prompt(message + ":\n" + courseTitle + "?\n" + contentRemoved + "\n" + askForInput );
 	    		if (result == "remove"){
 					
 	    			$j.get( "${removeURIstring}"+ "&courseId="+courseId, function( data ) {	    	
