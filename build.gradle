@@ -41,10 +41,10 @@ dependencies {
 	providedCompile( "javax.servlet:servlet-api:2.5" )
 	
 	// providedCompile dependencies are libraries needed to build, but should not be included in the B2 WAR.
-	providedCompile( "blackboard.platform:bb-platform:$ext.learnVersion" ) { transitive = false }
-	providedCompile( "blackboard.platform:bb-cms-admin:$ext.learnVersion" ) { transitive = false }
-	providedCompile( "blackboard.platform:bb-taglibs:$ext.learnVersion" ) { transitive = false }
-	providedCompile( "blackboard.platform:bb-bbxythos:$ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-platform:$project.ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-cms-admin:$project.ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-taglibs:$project.ext.learnVersion" ) { transitive = false }
+	providedCompile( "blackboard.platform:bb-bbxythos:$project.ext.learnVersion" ) { transitive = false }
 	
 	compile(logbackClassic)
 	compile(logbackCore)
@@ -55,23 +55,23 @@ dependencies {
 
 	compile( "commons-io:commons-io:2.4" )
 	compile( "org.apache.commons:commons-lang3:3.1" )
-	compile( "blackboard.platform:bb-spring-webapi:$ext.learnVersion" ) { transitive = false }
+	compile( "blackboard.platform:bb-spring-webapi:$project.ext.learnVersion" ) { transitive = false }
 
-	compile "org.springframework:spring-aop:$ext.springVersion",
-			"org.springframework:spring-asm:$ext.springVersion",
-			"org.springframework:spring-beans:$ext.springVersion",
-			"org.springframework:spring-context:$ext.springVersion",
-			"org.springframework:spring-core:$ext.springVersion",
-			"org.springframework:spring-expression:$ext.springVersion",
-			"org.springframework:spring-web:$ext.springVersion",
-			"org.springframework:spring-webmvc:$ext.springVersion",
-			"org.springframework:spring-context-support:$ext.springVersion",
-			"org.springframework:spring-jdbc:$ext.springVersion",
-			"org.springframework:spring-orm:$ext.springVersion",
-			"org.springframework:spring-tx:$ext.springVersion"
+	compile "org.springframework:spring-aop:$project.ext.springVersion",
+			"org.springframework:spring-asm:$project.ext.springVersion",
+			"org.springframework:spring-beans:$project.ext.springVersion",
+			"org.springframework:spring-context:$project.ext.springVersion",
+			"org.springframework:spring-core:$project.ext.springVersion",
+			"org.springframework:spring-expression:$project.ext.springVersion",
+			"org.springframework:spring-web:$project.ext.springVersion",
+			"org.springframework:spring-webmvc:$project.ext.springVersion",
+			"org.springframework:spring-context-support:$project.ext.springVersion",
+			"org.springframework:spring-jdbc:$project.ext.springVersion",
+			"org.springframework:spring-orm:$project.ext.springVersion",
+			"org.springframework:spring-tx:$project.ext.springVersion"
 
-	compile( "org.hibernate:hibernate-core:$ext.hibernateVersion" ) { transitive = true }
-	compile "org.hibernate:hibernate-entitymanager:$ext.hibernateVersion"
+	compile( "org.hibernate:hibernate-core:$project.ext.hibernateVersion" ) { transitive = true }
+	compile "org.hibernate:hibernate-entitymanager:$project.ext.hibernateVersion"
 
     compile group: 'org.ostermiller', name: 'utils', version: '1.07.00'
     
